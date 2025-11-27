@@ -33,7 +33,7 @@ def clasificar_oxido(img:np.ndarray): #recibe una imagen en formato cv2
   # Crear la variable booleana
   oxido_bool = count_nonzero_pixels > 35
 
-  return oxido_bool, orange_mask
+  return oxido_bool, opened_mask, orange_mask
 
 
 if __name__ == "__main__":

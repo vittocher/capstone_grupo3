@@ -16,11 +16,15 @@ def main():
         if not ret:
             break
         # Se clasifica la imagen
-        oxido, binary_mask = clasificar_oxido(frame)
+        oxido, binary_mask, orange_mask = clasificar_oxido(frame)
+        # Se crea la ventana de visualización
         cv2.putText(frame, f'Oxido: {oxido}', (10,30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
-        cv2.imshow('Camera', frame)
-        cv2.imshow('Binary Mask', binary_mask)
+        combined = np.hstack((frame, cv2.cvtColor(orange_mask, cv2.COLOR_GRAY2BGR),cv2.cvtColor(binary_mask, cv2.COLOR_GRAY2BGR)))
+        cv2.namedWindow('Output', cv2.WINDOW_NORMAL)
+        cv2.moveWindow('Output', 0, 0)
+        cv2.resizeWindow('Output', 1600, 540)
+        cv2.imshow('Output', combined)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
