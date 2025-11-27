@@ -10,8 +10,8 @@ def clasificar_oxido(img:np.ndarray): #recibe una imagen en formato cv2
 
   # Paso 2
   # Definir los rangos de Hue para el color naranja (usando enteros directos)
-  lower_orange_bound = 2
-  upper_orange_bound = 12
+  lower_orange_bound = 3
+  upper_orange_bound = 10
   # Crear la máscara binaria para los tonos naranjas en el canal H1 (1 = naranjo, 0 = nada)
   orange_mask = cv2.inRange(hchannel, lower_orange_bound, upper_orange_bound)
 
@@ -33,7 +33,7 @@ def clasificar_oxido(img:np.ndarray): #recibe una imagen en formato cv2
   # Crear la variable booleana
   oxido_bool = count_nonzero_pixels > 35
 
-  return oxido_bool
+  return oxido_bool, opened_mask
 
 
 if __name__ == "__main__":
@@ -57,5 +57,5 @@ if __name__ == "__main__":
     paths = [path1, path2, path3, path4, path5, path6]
     # Se clasifican las imágenes e imprimen los resultados
     for imagen in img_array:
-        print("Imagen", clasificar_oxido(imagen))
+        print("Imagen", clasificar_oxido(imagen)[0])
 
