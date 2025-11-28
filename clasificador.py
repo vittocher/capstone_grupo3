@@ -19,7 +19,7 @@ def clasificar_oxido(img:np.ndarray): #recibe una imagen en formato cv2
   # Kernel pequeño (5x5) para operaciones de cierre (dilatación y erosión)
   kernel_s = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10, 10))
   # Kernel mediano (10x10) para operaciones de apertura (erosión y dilatación)
-  kernel_m = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (30, 30))
+  kernel_m = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (40, 40))
   # Aplicar operación de Cierre (Dilatación seguida de Erosión) con kernel_s
   closed_mask = cv2.dilate(orange_mask, kernel_s, iterations=1)
   closed_mask = cv2.erode(closed_mask, kernel_s, iterations=1)
