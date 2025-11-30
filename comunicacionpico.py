@@ -14,11 +14,11 @@ BAUD_RATE = 115200
 try:
     # Intenta abrir el puerto serial
     ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
-    print(f"✅ Conectado al puerto: {SERIAL_PORT}")
+    print(f"Conectado al puerto: {SERIAL_PORT}")
     ser.flush() # Limpia cualquier dato pendiente
     
 except serial.SerialException as e:
-    print(f"❌ Error al abrir el puerto serial {SERIAL_PORT}: {e}")
+    print(f"Error al abrir el puerto serial {SERIAL_PORT}: {e}")
     print("Asegúrate de que la Pico está conectada y el puerto es correcto.")
     exit()
 
@@ -42,12 +42,12 @@ while True:
                     # Ejemplo: Guardar en un log, activar un script, enviar una notificación.
 
     except serial.SerialException:
-        print("🔴 Se perdió la conexión serial. Reintentando...")
+        print("Se perdió la conexión serial. Reintentando...")
         time.sleep(5)
         try:
             ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
             ser.flush()
-            print("✅ Reconexión exitosa.")
+            print("Reconexión exitosa.")
         except serial.SerialException:
             pass # Continúa el bucle y sigue intentando
             

@@ -2,7 +2,7 @@
 
 import cv2
 import numpy as np
-from clasificador import clasificar_oxido
+from clasificador import clasificar_oxido, segmentar_zona
 
 def main():
     # Abrir la cámara
@@ -17,8 +17,10 @@ def main():
         ret, frame = cap.read()
         if not ret:
             break
+        # Se segmenta la imagen
+        cropped, drawn = segmentar_zona(frame, show_lines=True)
         # Se clasifica la imagen
-        oxido, binary_mask, orange_mask = clasificar_oxido(frame)
+        oxido, binary_mask, orange_mask = clasificar_oxido(cropped)
         # Se crea la ventana de visualización
         cv2.putText(frame, f'Oxido: {oxido}', (10,30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
