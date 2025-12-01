@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 
+# Librerías para imágenes
 import cv2
 import numpy as np
 from clasificador import clasificar_oxido, segmentar_zona, pico_input
+# Librerías para comunicación serial
 import serial
 import time
+# Librería para manejar paths de output
+from pathlib import Path
 
 def main():
     ########################################
@@ -27,7 +31,6 @@ def main():
         print(f"Error al abrir el puerto serial {SERIAL_PORT}: {e}")
         print("Asegúrate de que la Pico está conectada y el puerto es correcto.")
         exit()
-
 
     ########################################
     ### Conexión con la cámara ###
@@ -76,9 +79,24 @@ def main():
                         ########################################
                         if oxido:
                             tipo_falla = "O"
-                            print(f"output2informe:O, {posicion:.2f}, path/to/image.jpg")
-                            # TODO: Guardar imagen en path/to/image.jpg
+                            ### Guardar imagen en output_informe/filename.jpg
+                            # Directorio de output
+                            output_dir = Path(__file__).resolve().parent / "output_informe"
+                            output_dir.mkdir(parents=True,exist_ok=True)
+                            # Nombre del archivo - se usa timestamp para evitar sobreescrituras
+                            timestamp = time.strftime('%Y%m%d_%H%M%S')
+                            filename = f"{tipo_falla}_{posicion:.2f}_{timestamp}.jpg"
+                            # Se guarda la imagen
+                            save_path = output_dir / filename
+                            ok = cv2.imwrite(str(save_path), frame)
+                            if ok:
+                                print(f"Imagen guardada en: {save_path}")
+                            else:
+                                print("Error al guardar la imagen.")
+                            
                             # TODO: Escribir output en informe.txt
+                            print(f"output2informe: O,{posicion:.2f},path/to/image.jpg")
+                            
                         else:
                             tipo_falla = "N"
                             print("MAIN_LOOP: No se detecta falla")
