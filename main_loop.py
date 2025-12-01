@@ -47,7 +47,7 @@ def main():
     ret, frame = cap.read()
     cropped, drawn = segmentar_zona(frame, show_lines=True)
     oxido, binary_mask, orange_mask = clasificar_oxido(cropped)
-
+    fisura = False  # Placeholder para fisura
     ########################################
     ### Parámetros inciales ###
     ########################################
@@ -88,10 +88,15 @@ def main():
                         ret, frame = cap.read()
                         if not ret:
                             break
+                        ### PROCESAMIENTO DE OXIDO 
                         # Se segmenta la imagen
                         cropped, drawn = segmentar_zona(frame, show_lines=True)
                         # Se clasifica la imagen
                         oxido, binary_mask, orange_mask = clasificar_oxido(cropped)
+                        
+                        ### PROCESAMIENTO DE FISURAS
+                        # (Por implementar)
+                        
                         ########################################
                         ### Output de resultados ###
                         ########################################
@@ -112,8 +117,8 @@ def main():
                                 print(f"output2informe: O,{posicion:.2f},path/to/image.jpg")
                             else:
                                 print("Error al guardar la imagen.")
-                            
-                        else:
+                        
+                        if not oxido and not fisura:
                             tipo_falla = "N"
                             print("MAIN_LOOP: No se detecta falla")
                         
