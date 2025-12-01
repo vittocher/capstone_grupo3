@@ -1,0 +1,12 @@
+tipo,posicion,path
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170735.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170738.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170740.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170742.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170744.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170747.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170749.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170751.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170751.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170752.jpg
+O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170752.jpg
