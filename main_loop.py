@@ -9,6 +9,8 @@ import serial
 import time
 # Librería para manejar paths de output
 from pathlib import Path
+# Librería para reiniciar el directorio de output
+import shutil
 
 def main():
     ########################################
@@ -53,9 +55,13 @@ def main():
     window_viz = True
     # Crear/reset del directorio y del informe al inicio de la ejecución
     output_dir = Path(__file__).resolve().parent / "output_informe"
+    # Si la carpeta ya existe, se elimina para reiniciar
+    if output_dir.exists() and output_dir.is_dir():
+        shutil.rmtree(output_dir)
+    # Crear la carpeta de output
     output_dir.mkdir(parents=True, exist_ok=True)
+    # Crear el archivo informe_raw.txt
     informe_path = output_dir / "informe_raw.txt"
-    # Reiniciar (sobrescribir) el archivo al comenzar
     with open(informe_path, "w", encoding="utf-8") as f:
         f.write("tipo,posicion,path\n")
 
@@ -115,7 +121,7 @@ def main():
                         ########################################
                         ### Fin de carrera ###
                         ########################################
-                        tipo_falla = "F"
+                        tipo_falla = "E"
                         # Añadir línea al informe (append)
                         with open(informe_path, "a", encoding="utf-8") as finf:
                             finf.write(f"{tipo_falla},{posicion:.2f},N/A\n")
