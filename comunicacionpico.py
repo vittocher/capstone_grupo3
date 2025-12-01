@@ -8,7 +8,12 @@ import time
 #    (Probablemente '/dev/ttyACM0' para la Pico)
 # 2. Asegúrate de que el 'baudrate' (tasa de baudios) sea compatible. 
 #    La Pico normalmente usa 115200 bps por defecto para su REPL/serial.
-SERIAL_PORT = '/dev/ttyACM0'
+# PUERTO REAL
+#SERIAL_PORT = '/dev/ttyACM0'
+# PUERTO SIMULADO
+# socat -d -d pty,raw,echo=0 pty,raw,echo=0
+# echo "Hola mensaje" > /dev/pts/4
+SERIAL_PORT = "/dev/pts/5"
 BAUD_RATE = 115200
 # --------------------------------------
 

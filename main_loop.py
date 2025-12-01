@@ -10,7 +10,13 @@ def main():
     ########################################
     ### Conexión con la Pico ###
     ########################################
-    SERIAL_PORT = '/dev/ttyACM0'
+    # PUERTO REAL
+    #SERIAL_PORT = '/dev/ttyACM0'
+    # PUERTO SIMULADO
+    # socat -d -d pty,raw,echo=0,link=/tmp/ttyPICO pty,raw,echo=0,link=/tmp/ttyPC
+    # echo "1,123.32" > /tmp/ttyPICO
+
+    SERIAL_PORT = "/tmp/ttyPC"
     BAUD_RATE = 115200
     try:
         # Intenta abrir el puerto serial
@@ -32,6 +38,10 @@ def main():
     if not cap.isOpened():
         raise SystemExit("Cannot open camera")
     print("Cámara abierta correctamente.")
+    # Hace una iteracion para crear las ventanas de visualización iniciales
+    ret, frame = cap.read()
+    cropped, drawn = segmentar_zona(frame, show_lines=True)
+    oxido, binary_mask, orange_mask = clasificar_oxido(cropped)
 
     # Configuración de visualización
     window_viz = True
@@ -48,7 +58,7 @@ def main():
                     hall, posicion = pico_input(line)
                     print(f"--- MENSAJE RECIBIDO ---")
                     print(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-                    print(f"Contenido: **{line}**-- Detección: {hall}, Posición: {posicion}")
+                    print(f"Contenido: **{line}** -- Detección de hall: {hall}, Posición: {posicion}")
                     
                     if hall == 1:
                         ########################################
@@ -80,50 +90,59 @@ def main():
         ########################################
         ### Manejo de excepciones ###
         ########################################
-        except serial.SerialException:
-            print("Se perdió la conexión serial. Reintentando...")
+        # Si se desconecta el puerto
+        except (serial.SerialException, OSError) as e:
+            print(f"Error:{e} -- Se perdió la conexión serial. Reintentando...")
             time.sleep(5)
             try:
                 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
                 ser.flush()
                 print("Reconexión exitosa.")
-            except serial.SerialException:
+            except (serial.SerialException, OSError):
                 pass # Continúa el bucle y sigue intentando
-                
+
+        # Si se cierra por teclado
         except KeyboardInterrupt:
-            print("\nSaliendo del programa.")
+            print("\nSaliendo del programa por KeyboardInterrupt...")
             break        
 
         ########################################
         ### Visualización en pantalla ###
         ########################################
-        if window_viz:
-            # Se escribe el resultado sobre frame
-            cv2.putText(frame, f'Oxido: {oxido}', (10,60),
-                        cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0,255,0), 4)
-            # Definir tamaño común para todas las imágenes
-            size = (320, 240)
-            frame_r = cv2.resize(frame, size)
-            orange_mask_r = cv2.resize(orange_mask, size)
-            binary_mask_r = cv2.resize(binary_mask, size)
-            cropped_r = cv2.resize(cropped, size)
-            drawn_r = cv2.resize(drawn, size)
-            # Primera fila: frame, drawn, cropped
-            row1 = np.hstack((frame_r, drawn_r,  cropped_r))
-            # Segunda fila: orange_mask, binary_mask (repetir uno para alinear 3 columnas)
-            row2 = np.hstack((cv2.cvtColor(orange_mask_r, cv2.COLOR_GRAY2BGR), cv2.cvtColor(binary_mask_r, cv2.COLOR_GRAY2BGR), np.zeros_like(frame_r)))
-            # Combinar filas
-            combined = np.vstack((row1, row2))
-            cv2.namedWindow('Output', cv2.WINDOW_NORMAL)
-            cv2.moveWindow('Output', 0, 0)
-            cv2.resizeWindow('Output', 960, 480)
-            cv2.imshow('Output', combined)
+        try:
+            if window_viz:
+                # Se escribe el resultado sobre frame
+                cv2.putText(frame, f'Oxido: {oxido}', (10,60),
+                            cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0,255,0), 4)
+                # Definir tamaño común para todas las imágenes
+                size = (320, 240)
+                frame_r = cv2.resize(frame, size)
+                orange_mask_r = cv2.resize(orange_mask, size)
+                binary_mask_r = cv2.resize(binary_mask, size)
+                cropped_r = cv2.resize(cropped, size)
+                drawn_r = cv2.resize(drawn, size)
+                # Primera fila: frame, drawn, cropped
+                row1 = np.hstack((frame_r, drawn_r,  cropped_r))
+                # Segunda fila: orange_mask, binary_mask (repetir uno para alinear 3 columnas)
+                row2 = np.hstack((cv2.cvtColor(orange_mask_r, cv2.COLOR_GRAY2BGR), cv2.cvtColor(binary_mask_r, cv2.COLOR_GRAY2BGR), np.zeros_like(frame_r)))
+                # Combinar filas
+                combined = np.vstack((row1, row2))
+                cv2.namedWindow('Output', cv2.WINDOW_NORMAL)
+                cv2.moveWindow('Output', 0, 0)
+                cv2.resizeWindow('Output', 960, 480)
+                cv2.imshow('Output', combined)
+
+            ########################################
+            ### Salida del bucle ###
+            ########################################
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                print("Saliendo del programa por tecla 'q'.")
+                break
+
+        except KeyboardInterrupt:
+            print("\nSaliendo del programa por KeyboardInterrupt.")
+            break  
         
-        ########################################
-        ### Salida del bucle ###
-        ########################################
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
 
     ########################################
     ### Limpieza final ###
