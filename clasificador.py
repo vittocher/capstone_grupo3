@@ -3,6 +3,19 @@ import cv2
 import numpy as np
 from pathlib import Path
 
+def pico_input(line: str):
+    """
+    Recibe el input de la raspi pico.
+    El input esperado es str(int, float)
+    int es la deteccion (0 o 1 dependiendo del hall, -1 si se llega a fin de carrera)
+    float es la posicion actual del robot
+    Retorna (detection:int, position:float)
+    """
+    parts = line.split(',')
+    detection = int(parts[0])
+    position = float(parts[1])
+    return detection, position
+
 def clasificar_oxido(img:np.ndarray, hue_bound=[1,6], k_small:int=10, k_mid=40): #recibe una imagen en formato cv2
   # Paso 1
   # Convertir la imagen de BGR a HSV

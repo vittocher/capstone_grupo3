@@ -29,6 +29,17 @@ def main():
         oxido, binary_mask, orange_mask = clasificar_oxido(cropped)
 
         ########################################
+        ### Resultados en consola ###
+        ########################################
+        if oxido:
+            tipo_falla = "O"
+            #print("Oxido detectado")
+        else:
+            tipo_falla = "N"
+            #print("MAIN_LOOP: No se detecta falla")
+        
+
+        ########################################
         ### Visualización en pantalla ###
         ########################################
         if window_viz:

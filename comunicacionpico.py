@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import serial
 import time
 
@@ -16,7 +17,6 @@ try:
     ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
     print(f"Conectado al puerto: {SERIAL_PORT}")
     ser.flush() # Limpia cualquier dato pendiente
-    
 except serial.SerialException as e:
     print(f"Error al abrir el puerto serial {SERIAL_PORT}: {e}")
     print("Asegúrate de que la Pico está conectada y el puerto es correcto.")
