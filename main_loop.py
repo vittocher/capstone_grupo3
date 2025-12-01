@@ -46,10 +46,22 @@ def main():
     cropped, drawn = segmentar_zona(frame, show_lines=True)
     oxido, binary_mask, orange_mask = clasificar_oxido(cropped)
 
+    ########################################
+    ### Parámetros inciales ###
+    ########################################
     # Configuración de visualización
     window_viz = True
+    # Crear/reset del directorio y del informe al inicio de la ejecución
+    output_dir = Path(__file__).resolve().parent / "output_informe"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    informe_path = output_dir / "informe_raw.txt"
+    # Reiniciar (sobrescribir) el archivo al comenzar
+    with open(informe_path, "w", encoding="utf-8") as f:
+        f.write("tipo,posicion,path\n")
 
-    # Bucle principal
+    ########################################
+    ### Bucle principal ###
+    ########################################
     while True:
         try:
             # Lee la línea completa hasta que encuentra un '\n'
@@ -80,9 +92,6 @@ def main():
                         if oxido:
                             tipo_falla = "O"
                             ### Guardar imagen en output_informe/filename.jpg
-                            # Directorio de output
-                            output_dir = Path(__file__).resolve().parent / "output_informe"
-                            output_dir.mkdir(parents=True,exist_ok=True)
                             # Nombre del archivo - se usa timestamp para evitar sobreescrituras
                             timestamp = time.strftime('%Y%m%d_%H%M%S')
                             filename = f"{tipo_falla}_{posicion:.2f}_{timestamp}.jpg"
@@ -91,17 +100,26 @@ def main():
                             ok = cv2.imwrite(str(save_path), frame)
                             if ok:
                                 print(f"Imagen guardada en: {save_path}")
+                                # Añadir línea al informe (append)
+                                with open(informe_path, "a", encoding="utf-8") as finf:
+                                    finf.write(f"{tipo_falla},{posicion:.2f},{str(save_path)}\n")
+                                print(f"output2informe: O,{posicion:.2f},path/to/image.jpg")
                             else:
                                 print("Error al guardar la imagen.")
-                            
-                            # TODO: Escribir output en informe.txt
-                            print(f"output2informe: O,{posicion:.2f},path/to/image.jpg")
                             
                         else:
                             tipo_falla = "N"
                             print("MAIN_LOOP: No se detecta falla")
                         
                     elif hall == -1:
+                        ########################################
+                        ### Fin de carrera ###
+                        ########################################
+                        tipo_falla = "F"
+                        # Añadir línea al informe (append)
+                        with open(informe_path, "a", encoding="utf-8") as finf:
+                            finf.write(f"{tipo_falla},{posicion:.2f},N/A\n")
+                        print(f"output2informe: F,{posicion:.2f},N/A")
                         print("Fin de carrera detectado. Saliendo del programa.")
                         break
         
