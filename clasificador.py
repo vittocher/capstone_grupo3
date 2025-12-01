@@ -147,8 +147,16 @@ if __name__ == "__main__":
     for imagen in img_array:
       cropped_array.append(segmentar_zona(imagen)[0])
     
-    # Se clasifican las imágenes e imprimen los resultados
-    for crop in cropped_array:
-      print("Imagen", clasificar_oxido(crop)[0])
+ 
+
+    while True:
+        try:
+            # Se clasifican las imágenes e imprimen los resultados
+            for crop in cropped_array:
+                print("Imagen", clasificar_oxido(crop)[0])
+        except KeyboardInterrupt:
+            print("bye")
+            break
+
 
 
