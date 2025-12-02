@@ -20,6 +20,8 @@ def main():
         ret, frame = cap.read()
         if not ret:
             break
+        # BENCHMARK-HZ: Marcar el tiempo de inicio
+        start_time = cv2.getTickCount()
         ########################################
         ### Procesamiento de la imagen ###
         ########################################
@@ -63,6 +65,14 @@ def main():
             cv2.moveWindow('Output', 0, 0)
             cv2.resizeWindow('Output', 960, 480)
             cv2.imshow('Output', combined)
+        
+        # BENCHMARK-HZ: Calcular y mostrar FPS
+        end_time = cv2.getTickCount()
+        time_diff = (end_time - start_time) / cv2.getTickFrequency()
+        # Calcular FPS
+        fps = 1.0 / time_diff if time_diff > 0 else 0
+        ms_per_frame = time_diff * 1000 # convierte a ms
+        print(f"FPS: {fps:.2f}, Tiempo por frame: {ms_per_frame:.2f} ms")
         
         ########################################
         ### Salida del bucle ###
