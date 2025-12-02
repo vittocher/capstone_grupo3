@@ -3,6 +3,7 @@
 # Librerías para imágenes
 import cv2
 import numpy as np
+# Funciones propias
 from clasificador import clasificar_oxido, segmentar_zona, pico_input
 # Librerías para comunicación serial
 import serial
