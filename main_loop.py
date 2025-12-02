@@ -90,6 +90,11 @@ def main():
     ########################################
     ### Bucle principal ###
     ########################################
+    # Avisa a la Pico que está listo
+    msj_start = "START\n"
+    ser.write(msj_start.encode("utf-8"))
+    print(f"Enviado a Pico: {msj_start.strip()}")
+    # Main loop
     while True:
         try:
             # Lee la línea completa hasta que encuentra un '\n'
