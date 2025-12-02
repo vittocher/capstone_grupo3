@@ -22,6 +22,7 @@ def main():
     # PUERTO SIMULADO:  SERIAL_PORT = "/tmp/ttyPC"
     # socat -d -d pty,raw,echo=0,link=/tmp/ttyPICO pty,raw,echo=0,link=/tmp/ttyPC
     # echo "1,123.32" > /tmp/ttyPICO
+    # cat /tmp/ttyPICO 
 
     BAUD_RATE = 115200
     while True:
