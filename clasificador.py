@@ -124,12 +124,12 @@ def segmentar_zona(img:np.ndarray, per:int=97, kernel_v_width:int=5, show_lines:
 if __name__ == "__main__":
     # Se testea con imágenes de prueba
     path0 = str(Path(__file__).parent) + "/"
-    path1 = path0 + "B1.jpg"
-    path2 = path0 + "B2.jpg"
-    path3 = path0 + "B3.jpg"
-    path4 = path0 + "B4.jpg"
-    path5 = path0 + "B5.jpg"
-    path6 = path0 + "B6.jpg"
+    path1 = path0 + "ejemplos/B1.jpg"
+    path2 = path0 + "ejemplos/B2.jpg"
+    path3 = path0 + "ejemplos/B3.jpg"
+    path4 = path0 + "ejemplos/B4.jpg"
+    path5 = path0 + "ejemplos/B5.jpg"
+    path6 = path0 + "ejemplos/B6.jpg"
     # Se cargan las imágenes
     img1 = cv2.imread(path1)
     img2 = cv2.imread(path2)
