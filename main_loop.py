@@ -18,12 +18,11 @@ def main():
     ### Conexión con la Pico ###
     ########################################
     # PUERTO REAL
-    #SERIAL_PORT = '/dev/ttyACM0'
-    # PUERTO SIMULADO
+    SERIAL_PORT = '/dev/ttyACM0'
+    # PUERTO SIMULADO:  SERIAL_PORT = "/tmp/ttyPC"
     # socat -d -d pty,raw,echo=0,link=/tmp/ttyPICO pty,raw,echo=0,link=/tmp/ttyPC
     # echo "1,123.32" > /tmp/ttyPICO
 
-    SERIAL_PORT = "/tmp/ttyPC"
     BAUD_RATE = 115200
     while True:
         try:
@@ -34,8 +33,16 @@ def main():
             break
         except serial.SerialException as e:
             print(f"Error al abrir el puerto serial {SERIAL_PORT}: {e}")
-            print("Reintentando en 3 segundos...")
+            print("Reintentando otro puerto en 3 segundos...")
+            # Alternar entre puerto real y simulado para pruebas
+            if SERIAL_PORT == "/dev/ttyACM0":
+                SERIAL_PORT = "/tmp/ttyPC"
+            else:
+                SERIAL_PORT = '/dev/ttyACM0'
             time.sleep(3)
+        except KeyboardInterrupt:
+            print("\nSaliendo del programa por KeyboardInterrupt.")
+            return
 
     ########################################
     ### Conexión con la cámara ###
@@ -54,6 +61,9 @@ def main():
             print(f"Error al abrir la cámara: {e}")
             print("Reintentando en 3 segundos...")
             time.sleep(3)
+        except KeyboardInterrupt:
+            print("\nSaliendo del programa por KeyboardInterrupt.")
+            return
 
     # Hace una iteracion para crear las ventanas de visualización iniciales
     ret, frame = cap.read()
@@ -97,6 +107,9 @@ def main():
                         ########################################
                         ### Procesamiento de la imagen ###
                         ########################################
+                        # Limpia el buffer de la cámara
+                        for _ in range(5):
+                            cap.grab()
                         ret, frame = cap.read()
                         if not ret:
                             break
@@ -126,10 +139,15 @@ def main():
                                 # Añadir línea al informe (append)
                                 with open(informe_path, "a", encoding="utf-8") as finf:
                                     finf.write(f"{tipo_falla},{posicion:.2f},{str(save_path)}\n")
-                                print(f"output2informe: O,{posicion:.2f},path/to/image.jpg")
+                                    print(f"output2informe: O,{posicion:.2f},path/to/image.jpg")
                             else:
                                 print("Error al guardar la imagen.")
+
+
                         
+                        ########################################
+                        ### No se detecta falla ###
+                        ########################################
                         if not oxido and not fisura:
                             tipo_falla = "N"
                             print("MAIN_LOOP: No se detecta falla")
@@ -146,6 +164,43 @@ def main():
                         print("Fin de carrera detectado. Saliendo del programa.")
                         break
         
+            ########################################
+            ### Visualización en pantalla ###
+            ########################################
+            try:
+                if window_viz:
+                    # Se escribe el resultado sobre frame
+                    cv2.putText(frame, f'Oxido: {oxido}', (10,60),
+                                cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0,255,0), 4)
+                    # Definir tamaño común para todas las imágenes
+                    size = (320, 240)
+                    frame_r = cv2.resize(frame, size)
+                    orange_mask_r = cv2.resize(orange_mask, size)
+                    binary_mask_r = cv2.resize(binary_mask, size)
+                    cropped_r = cv2.resize(cropped, size)
+                    drawn_r = cv2.resize(drawn, size)
+                    # Primera fila: frame, drawn, cropped
+                    row1 = np.hstack((frame_r, drawn_r,  cropped_r))
+                    # Segunda fila: orange_mask, binary_mask (repetir uno para alinear 3 columnas)
+                    row2 = np.hstack((cv2.cvtColor(orange_mask_r, cv2.COLOR_GRAY2BGR), cv2.cvtColor(binary_mask_r, cv2.COLOR_GRAY2BGR), np.zeros_like(frame_r)))
+                    # Combinar filas
+                    combined = np.vstack((row1, row2))
+                    cv2.namedWindow('Output', cv2.WINDOW_NORMAL)
+                    cv2.moveWindow('Output', 30, 30)
+                    cv2.resizeWindow('Output', 960, 480)
+                    cv2.imshow('Output', combined)
+
+                ########################################
+                ### Salida del bucle ###
+                ########################################
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    print("Saliendo del programa por tecla 'q'.")
+                    break
+
+            except KeyboardInterrupt:
+                print("\nSaliendo del programa por KeyboardInterrupt.")
+                break 
+
         ########################################
         ### Manejo de excepciones ###
         ########################################
@@ -165,43 +220,6 @@ def main():
             print("\nSaliendo del programa por KeyboardInterrupt...")
             break        
 
-        ########################################
-        ### Visualización en pantalla ###
-        ########################################
-        try:
-            if window_viz:
-                # Se escribe el resultado sobre frame
-                cv2.putText(frame, f'Oxido: {oxido}', (10,60),
-                            cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0,255,0), 4)
-                # Definir tamaño común para todas las imágenes
-                size = (320, 240)
-                frame_r = cv2.resize(frame, size)
-                orange_mask_r = cv2.resize(orange_mask, size)
-                binary_mask_r = cv2.resize(binary_mask, size)
-                cropped_r = cv2.resize(cropped, size)
-                drawn_r = cv2.resize(drawn, size)
-                # Primera fila: frame, drawn, cropped
-                row1 = np.hstack((frame_r, drawn_r,  cropped_r))
-                # Segunda fila: orange_mask, binary_mask (repetir uno para alinear 3 columnas)
-                row2 = np.hstack((cv2.cvtColor(orange_mask_r, cv2.COLOR_GRAY2BGR), cv2.cvtColor(binary_mask_r, cv2.COLOR_GRAY2BGR), np.zeros_like(frame_r)))
-                # Combinar filas
-                combined = np.vstack((row1, row2))
-                cv2.namedWindow('Output', cv2.WINDOW_NORMAL)
-                cv2.moveWindow('Output', 0, 0)
-                cv2.resizeWindow('Output', 960, 480)
-                cv2.imshow('Output', combined)
-
-            ########################################
-            ### Salida del bucle ###
-            ########################################
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                print("Saliendo del programa por tecla 'q'.")
-                break
-
-        except KeyboardInterrupt:
-            print("\nSaliendo del programa por KeyboardInterrupt.")
-            break  
-        
 
     ########################################
     ### Limpieza final ###
