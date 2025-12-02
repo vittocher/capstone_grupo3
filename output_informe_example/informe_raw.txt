@@ -8,3 +8,4 @@ O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170747.jpg
 O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170749.jpg
 O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170751.jpg
 O,123.32,/home/vitto/grupo3_ws/output_informe/O_123.32_20251201_170752.jpg
+E,123.32,N/A
