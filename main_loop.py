@@ -24,25 +24,36 @@ def main():
 
     SERIAL_PORT = "/tmp/ttyPC"
     BAUD_RATE = 115200
-    try:
-        # Intenta abrir el puerto serial
-        ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
-        print(f"Conectado al puerto: {SERIAL_PORT}")
-        ser.flush() # Limpia cualquier dato pendiente
-    except serial.SerialException as e:
-        print(f"Error al abrir el puerto serial {SERIAL_PORT}: {e}")
-        print("Asegúrate de que la Pico está conectada y el puerto es correcto.")
-        exit()
+    while True:
+        try:
+            # Intenta abrir el puerto serial
+            ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
+            print(f"Conectado al puerto: {SERIAL_PORT}")
+            ser.flush() # Limpia cualquier dato pendiente
+            break
+        except serial.SerialException as e:
+            print(f"Error al abrir el puerto serial {SERIAL_PORT}: {e}")
+            print("Reintentando en 3 segundos...")
+            time.sleep(3)
 
     ########################################
     ### Conexión con la cámara ###
     ########################################
-    cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    if not cap.isOpened():
-        raise SystemExit("Cannot open camera")
-    print("Cámara abierta correctamente.")
+    while True:
+        try:
+            cap = cv2.VideoCapture(0)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            if cap.isOpened():
+                print("Cámara abierta correctamente.")
+                break
+            else:
+                raise SystemExit("Cannot open camera")
+        except SystemExit as e:
+            print(f"Error al abrir la cámara: {e}")
+            print("Reintentando en 3 segundos...")
+            time.sleep(3)
+
     # Hace una iteracion para crear las ventanas de visualización iniciales
     ret, frame = cap.read()
     cropped, drawn = segmentar_zona(frame, show_lines=True)

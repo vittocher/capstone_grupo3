@@ -154,6 +154,7 @@ if __name__ == "__main__":
             # Se clasifican las imágenes e imprimen los resultados
             for crop in cropped_array:
                 print("Imagen", clasificar_oxido(crop)[0])
+                print(img1.shape)
         except KeyboardInterrupt:
             print("bye")
             break
