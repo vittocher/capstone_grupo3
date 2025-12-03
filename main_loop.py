@@ -29,7 +29,7 @@ def main():
         try:
             # Intenta abrir el puerto serial
             ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
-            print(f"Conectado al puerto: {SERIAL_PORT}")
+            print(f"EXITO >>> Conectado al puerto: {SERIAL_PORT}")
             ser.flush() # Limpia cualquier dato pendiente
             break
         except serial.SerialException as e:
@@ -48,19 +48,24 @@ def main():
     ########################################
     ### Conexión con la cámara ###
     ########################################
+    index = 0
     while True:
         try:
-            cap = cv2.VideoCapture(0)
+            cap = cv2.VideoCapture(index)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             if cap.isOpened():
-                print("Cámara abierta correctamente.")
+                print("EXITO >>> Cámara abierta correctamente.")
                 break
             else:
                 raise SystemExit("Cannot open camera")
         except SystemExit as e:
             print(f"Error al abrir la cámara: {e}")
             print("Reintentando en 3 segundos...")
+            if index == 0:
+                index = 1
+            else:
+                index = 0
             time.sleep(3)
         except KeyboardInterrupt:
             print("\nSaliendo del programa por KeyboardInterrupt.")
@@ -75,7 +80,7 @@ def main():
     ### Parámetros inciales ###
     ########################################
     # Configuración de visualización
-    window_viz = True
+    WINDOW_VIZ = True
     # Crear/reset del directorio y del informe al inicio de la ejecución
     output_dir = Path(__file__).resolve().parent / "output_informe"
     # Si la carpeta ya existe, se elimina para reiniciar
@@ -174,7 +179,7 @@ def main():
             ### Visualización en pantalla ###
             ########################################
             try:
-                if window_viz:
+                if WINDOW_VIZ:
                     # Se escribe el resultado sobre frame
                     cv2.putText(frame, f'Oxido: {oxido}', (10,60),
                                 cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0,255,0), 4)
