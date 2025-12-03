@@ -11,9 +11,13 @@ def pico_input(line: str):
     float es la posicion actual del robot
     Retorna (detection:int, position:float)
     """
-    parts = line.split(',')
-    detection = int(parts[0])
-    position = float(parts[1])
+    try:
+        parts = line.split(',')
+        detection = int(parts[0])
+        position = float(parts[1])
+    except:
+        print(f"Error al parsear el input de la pico. Recibido: {line}")
+    
     return detection, position
 
 def clasificar_oxido(img:np.ndarray, hue_bound=[1,6], k_small:int=10, k_mid=40): #recibe una imagen en formato cv2
