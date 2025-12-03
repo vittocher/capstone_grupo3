@@ -1,0 +1,7 @@
+tipo,posicion,path
+O,123.32,/home/grupo3/grupo3_ws/output_informe/O_123.32_20251203_143346.jpg
+O,123.32,/home/grupo3/grupo3_ws/output_informe/O_123.32_20251203_143656.jpg
+O,123.32,/home/grupo3/grupo3_ws/output_informe/O_123.32_20251203_143821.jpg
+O,123.32,/home/grupo3/grupo3_ws/output_informe/O_123.32_20251203_143900.jpg
+O,123.32,/home/grupo3/grupo3_ws/output_informe/O_123.32_20251203_143941.jpg
+E,123.32,N/A

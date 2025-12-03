@@ -14,6 +14,7 @@ from pathlib import Path
 import shutil
 
 def main():
+    print("--- INICIANDO MAIN LOOP ---")
     ########################################
     ### Conexión con la Pico ###
     ########################################
@@ -97,7 +98,7 @@ def main():
     ### Bucle principal ###
     ########################################
     # Avisa a la Pico que está listo
-    msj_start = "START\n"
+    msj_start = "start\n"
     ser.write(msj_start.encode("utf-8"))
     print(f"Enviado a Pico: {msj_start.strip()}")
     # Main loop
@@ -171,7 +172,7 @@ def main():
                         # Añadir línea al informe (append)
                         with open(informe_path, "a", encoding="utf-8") as finf:
                             finf.write(f"{tipo_falla},{posicion:.2f},N/A\n")
-                        print(f"output2informe: F,{posicion:.2f},N/A")
+                        print(f"output2informe: E,{posicion:.2f},N/A")
                         print("Fin de carrera detectado. Saliendo del programa.")
                         break
         
